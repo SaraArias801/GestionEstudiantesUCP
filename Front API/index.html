@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Estudiantes</title>
+    <style>
+        /* --- Estilos CSS --- */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1, h2 {
+            color: #0056b3;
+        }
+
+        .form-section, .table-section {
+            margin-bottom: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="email"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button.delete {
+            background-color: #dc3545;
+        }
+        button.delete:hover {
+            background-color: #c82333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        /* Estilos para el Modal */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.4); 
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto; 
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Gestión de Estudiantes</h1>
+
+        <!-- Sección para Agregar Estudiante -->
+        <div class="form-section">
+            <h2>Agregar Nuevo Estudiante</h2>
+            <form id="form-agregar">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nombre">Nombre:</label>
+                        <input type="text" id="nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="apellido">Apellido:</label>
+                        <input type="text" id="apellido" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edad">Edad:</label>
+                        <input type="number" id="edad" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="grado">Grado:</label>
+                        <input type="text" id="grado" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="curso">Curso:</label>
+                        <input type="text" id="curso" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="telefono">Teléfono:</label>
+                        <input type="text" id="telefono">
+                    </div>
+                    <div class="form-group">
+                        <label for="nota_p1">Nota Periodo 1:</label>
+                        <input type="number" step="0.1" id="nota_p1" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nota_p2">Nota Periodo 2:</label>
+                        <input type="number" step="0.1" id="nota_p2" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nota_p3">Nota Periodo 3:</label>
+                        <input type="number" step="0.1" id="nota_p3" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nota_p4">Nota Periodo 4:</label>
+                        <input type="number" step="0.1" id="nota_p4" required>
+                    </div>
+                </div>
+                <button type="submit">Agregar Estudiante</button>
+            </form>
+        </div>
+
+        <!-- Sección para Listar Estudiantes -->
+        <div class="table-section">
+            <h2>Lista de Estudiantes</h2>
+            <table id="tabla-estudiantes">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Edad</th>
+                        <th>Grado</th>
+                        <th>Curso</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Notas (P1, P2, P3, P4)</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpo-tabla">
+                    <!-- Las filas de estudiantes se insertarán aquí con JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal para Editar Estudiante -->
+    <div id="modal-editar" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Editar Estudiante</h2>
+            <form id="form-editar">
+                <input type="hidden" id="editar-id">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editar-nombre">Nombre:</label>
+                        <input type="text" id="editar-nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editar-apellido">Apellido:</label>
+                        <input type="text" id="editar-apellido" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editar-edad">Edad:</label>
+                        <input type="number" id="editar-edad" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editar-grado">Grado:</label>
+                        <input type="text" id="editar-grado" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editar-curso">Curso:</label>
+                        <input type="text" id="editar-curso" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editar-email">Email:</label>
+                        <input type="email" id="editar-email" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editar-telefono">Teléfono:</label>
+                        <input type="text" id="editar-telefono">
+                    </div>
+                    <div class="form-group">
+                        <label for="editar-nota_p1">Nota Periodo 1:</label>
+                        <input type="number" step="0.1" id="editar-nota_p1" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editar-nota_p2">Nota Periodo 2:</label>
+                        <input type="number" step="0.1" id="editar-nota_p2" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editar-nota_p3">Nota Periodo 3:</label>
+                        <input type="number" step="0.1" id="editar-nota_p3" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editar-nota_p4">Nota Periodo 4:</label>
+                        <input type="number" step="0.1" id="editar-nota_p4" required>
+                    </div>
+                </div>
+                <button type="submit">Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // --- Lógica JavaScript ---
+
+        const API_URL = 'http://localhost:3000/api/estudiantes';
+
+        // Referencias a elementos del DOM
+        const formAgregar = document.getElementById('form-agregar');
+        const formEditar = document.getElementById('form-editar');
+        const cuerpoTabla = document.getElementById('cuerpo-tabla');
+        const modalEditar = document.getElementById('modal-editar');
+        const spanClose = document.getElementsByClassName('close')[0];
+
+        // --- FUNCIONES PRINCIPALES ---
+
+        // Obtener y mostrar todos los estudiantes
+        async function obtenerEstudiantes() {
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+                const estudiantes = await response.json();
+                mostrarEstudiantes(estudiantes);
+            } catch (error) {
+                console.error('Error al obtener estudiantes:', error);
+                alert('No se pudieron cargar los estudiantes. Revisa la consola para más detalles.');
+            }
+        }
+
+        // Mostrar estudiantes en la tabla
+        function mostrarEstudiantes(estudiantes) {
+            cuerpoTabla.innerHTML = ''; // Limpiar tabla actual
+            if (estudiantes.length === 0) {
+                cuerpoTabla.innerHTML = '<tr><td colspan="10">No hay estudiantes registrados.</td></tr>';
+                return;
+            }
+
+            estudiantes.forEach(estudiante => {
+                const fila = document.createElement('tr');
+                fila.innerHTML = `
+                    <td>${estudiante.id}</td>
+                    <td>${estudiante.nombre}</td>
+                    <td>${estudiante.apellido}</td>
+                    <td>${estudiante.edad}</td>
+                    <td>${estudiante.grado}</td>
+                    <td>${estudiante.curso}</td>
+                    <td>${estudiante.email}</td>
+                    <td>${estudiante.telefono || 'N/A'}</td>
+                    <td>${estudiante.nota_p1}, ${estudiante.nota_p2}, ${estudiante.nota_p3}, ${estudiante.nota_p4}</td>
+                    <td>
+                        <button onclick="abrirModalEditar(${estudiante.id})">Editar</button>
+                        <button class="delete" onclick="eliminarEstudiante(${estudiante.id})">Eliminar</button>
+                    </td>
+                `;
+                cuerpoTabla.appendChild(fila);
+            });
+        }
+
+        // Agregar un nuevo estudiante
+        formAgregar.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nuevoEstudiante = {
+                nombre: document.getElementById('nombre').value,
+                apellido: document.getElementById('apellido').value,
+                edad: document.getElementById('edad').value,
+                grado: document.getElementById('grado').value,
+                curso: document.getElementById('curso').value,
+                email: document.getElementById('email').value,
+                telefono: document.getElementById('telefono').value,
+                nota_p1: document.getElementById('nota_p1').value,
+                nota_p2: document.getElementById('nota_p2').value,
+                nota_p3: document.getElementById('nota_p3').value,
+                nota_p4: document.getElementById('nota_p4').value,
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(nuevoEstudiante)
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `Error HTTP: ${response.status}`);
+                }
+                formAgregar.reset();
+                obtenerEstudiantes(); // Recargar la lista
+            } catch (error) {
+                console.error('Error al agregar estudiante:', error);
+                alert(`Error al agregar: ${error.message}`);
+            }
+        });
+
+        // --- FUNCIONES DE MODAL (EDITAR) ---
+
+        // Abrir modal y cargar datos del estudiante
+        async function abrirModalEditar(id) {
+            try {
+                const response = await fetch(`${API_URL}/${id}`);
+                if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+                const estudiante = await response.json();
+
+                document.getElementById('editar-id').value = estudiante.id;
+                document.getElementById('editar-nombre').value = estudiante.nombre;
+                document.getElementById('editar-apellido').value = estudiante.apellido;
+                document.getElementById('editar-edad').value = estudiante.edad;
+                document.getElementById('editar-grado').value = estudiante.grado;
+                document.getElementById('editar-curso').value = estudiante.curso;
+                document.getElementById('editar-email').value = estudiante.email;
+                document.getElementById('editar-telefono').value = estudiante.telefono || '';
+                document.getElementById('editar-nota_p1').value = estudiante.nota_p1;
+                document.getElementById('editar-nota_p2').value = estudiante.nota_p2;
+                document.getElementById('editar-nota_p3').value = estudiante.nota_p3;
+                document.getElementById('editar-nota_p4').value = estudiante.nota_p4;
+                
+                modalEditar.style.display = 'block';
+            } catch (error) {
+                console.error('Error al obtener estudiante para editar:', error);
+                alert('No se pudo cargar la información del estudiante.');
+            }
+        }
+
+        // Guardar cambios del estudiante editado
+        formEditar.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('editar-id').value;
+            const estudianteActualizado = {
+                nombre: document.getElementById('editar-nombre').value,
+                apellido: document.getElementById('editar-apellido').value,
+                edad: document.getElementById('editar-edad').value,
+                grado: document.getElementById('editar-grado').value,
+                curso: document.getElementById('editar-curso').value,
+                email: document.getElementById('editar-email').value,
+                telefono: document.getElementById('editar-telefono').value,
+                nota_p1: document.getElementById('editar-nota_p1').value,
+                nota_p2: document.getElementById('editar-nota_p2').value,
+                nota_p3: document.getElementById('editar-nota_p3').value,
+                nota_p4: document.getElementById('editar-nota_p4').value,
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(estudianteActualizado)
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `Error HTTP: ${response.status}`);
+                }
+                cerrarModalEditar();
+                obtenerEstudiantes(); // Recargar la lista
+            } catch (error) {
+                console.error('Error al actualizar estudiante:', error);
+                alert(`Error al actualizar: ${error.message}`);
+            }
+        });
+
+        // Cerrar modal
+        function cerrarModalEditar() {
+            modalEditar.style.display = 'none';
+        }
+
+        spanClose.onclick = cerrarModalEditar;
+        window.onclick = function(event) {
+            if (event.target == modalEditar) {
+                cerrarModalEditar();
+            }
+        }
+
+        // --- FUNCIÓN DE ELIMINAR ---
+
+        async function eliminarEstudiante(id) {
+            if (confirm('¿Estás seguro de que deseas eliminar a este estudiante?')) {
+                try {
+                    const response = await fetch(`${API_URL}/${id}`, {
+                        method: 'DELETE'
+                    });
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || `Error HTTP: ${response.status}`);
+                    }
+                    obtenerEstudiantes(); // Recargar la lista
+                } catch (error) {
+                    console.error('Error al eliminar estudiante:', error);
+                    alert(`Error al eliminar: ${error.message}`);
+                }
+            }
+        }
+
+        // --- INICIALIZACIÓN ---
+        // Cargar la lista de estudiantes cuando la página se cargue
+        document.addEventListener('DOMContentLoaded', obtenerEstudiantes);
+
+    </script>
+</body>
+</html>
