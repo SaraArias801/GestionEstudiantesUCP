@@ -1,3 +1,4 @@
+//Aca inicia el programa :D
 const dotenv = require('dotenv');
 const app = require('./app');
 const { ping } = require('./database');
@@ -15,7 +16,8 @@ async function start() {
     process.exit(1);
   }
 
-  app.listen(port, () => {
+  //Metodo de express para recibir y enviar peticiones a traves del puerto 3000
+  app.listen(port, () => { 
     console.log(`API escuchando en http://localhost:${port}`);
   });
 }
